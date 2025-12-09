@@ -1,9 +1,9 @@
 # Adding HTTP provider, data source and local for AUTOMATED IP
 
 terraform {
-  required_providers{
+  required_providers {
     http = {
-      source = "hashicorp/http"
+      source  = "hashicorp/http"
       version = "~> 3.4"
     }
     aws = {
@@ -14,8 +14,8 @@ terraform {
 
 # Configure AWS provider
 provider "aws" {
-      region = var.default_region
-    }
+  region = var.default_region
+}
 
 # Get current IP at plan/apply time - for an Automatically updated IP
 data "http" "my_ip" {
@@ -31,18 +31,18 @@ locals {
 resource "aws_security_group" "app_sg" {
   name        = var.app_sg_name
   description = var.app_sg_description
- 
+
   ingress {
     description = var.ssh_port_description
     from_port   = var.ssh_port
     to_port     = var.ssh_port
     protocol    = "tcp"
-   # cidr_blocks = [var.ssh_ingress_cidr] # my IP as of 08/12/2025
-    cidr_blocks = [local.my_ip_cidr]  # Automatically updated IP
+    # cidr_blocks = [var.ssh_ingress_cidr] # my IP as of 08/12/2025
+    cidr_blocks = [local.my_ip_cidr] # Automatically updated IP
   }
 
   ingress {
-    description = var.http_port_description 
+    description = var.http_port_description
     from_port   = var.http_port
     to_port     = var.http_port
     protocol    = "tcp"
@@ -57,7 +57,7 @@ resource "aws_security_group" "app_sg" {
     cidr_blocks = var.app_port_ingress_cidrs
   }
 
-    # Allow all outbound traffic
+  # Allow all outbound traffic
   egress {
     from_port   = var.egress_port
     to_port     = var.egress_port
@@ -70,14 +70,16 @@ resource "aws_security_group" "app_sg" {
 resource "aws_instance" "app_instance" {
   ami                         = var.app_ami_id
   instance_type               = var.vm_instance_type
-  associate_public_ip_address = false
+  associate_public_ip_address = true
 
   key_name = var.vm_key_name
 
   vpc_security_group_ids = [aws_security_group.app_sg.id]
 
+  user_data = file("${path.module}/user_data.sh")
+
   tags = {
-    Name = "tech515-carla-tf-first-instance"
+    Name = "tech515-carla-tf-app-instance"
   }
 }
 
