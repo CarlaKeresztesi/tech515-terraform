@@ -14,35 +14,19 @@ locals {
 }
 
 # Networking Security Group
-resource "aws_security_group" "app_sg" {
-  name        = var.app_sg_name
-  description = var.app_sg_description
+resource "aws_security_group" "db_sg" {
+  name        = var.db_sg_name
+  description = var.db_sg_description
 
   ingress {
-    description = var.ssh_port_description
-    from_port   = var.ssh_port
-    to_port     = var.ssh_port
+    description = var.db_port_description
+    from_port   = var.db_port
+    to_port     = var.db_port
     protocol    = "tcp"
-    # cidr_blocks = [var.ssh_ingress_cidr] # my IP as of 08/12/2025
-    cidr_blocks = [local.my_ip_cidr] # Automatically updated IP
+    cidr_blocks = [var.db_ingress_cidr]
   }
 
-  ingress {
-    description = var.http_port_description
-    from_port   = var.http_port
-    to_port     = var.http_port
-    protocol    = "tcp"
-    cidr_blocks = [var.http_ingress_cidr] #check why no []
-  }
-
-  ingress {
-    description = var.app_port_description
-    from_port   = var.app_port
-    to_port     = var.app_port
-    protocol    = "tcp"
-    cidr_blocks = var.app_port_ingress_cidrs
-  }
-
+  
   # Allow all outbound traffic
   egress {
     from_port   = var.egress_port
@@ -54,7 +38,7 @@ resource "aws_security_group" "app_sg" {
 
 # Compute
 resource "aws_instance" "app_instance" {
-  ami                         = var.app_ami_id
+  ami                         = var.db_ami_id
   instance_type               = var.vm_instance_type
   associate_public_ip_address = true
 
