@@ -23,32 +23,30 @@ resource "aws_security_group" "db_sg" {
     from_port   = var.db_port
     to_port     = var.db_port
     protocol    = "tcp"
-   # cidr_blocks = [var.db_ingress_cidr]
-    security-groups = [var.app_sg_id]
+    security_groups = [var.app_sg_id]
   }
 
-  
-  # Allow all outbound traffic
   egress {
-    from_port   = var.egress_port
-    to_port     = var.egress_port
-    protocol    = var.egress_protocol
-    cidr_blocks = var.egress_cidrs
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 }
 
 # Compute
-resource "aws_instance" "app_instance" {
+resource "aws_instance" "db_instance" {
   ami                         = var.db_ami_id
   instance_type               = var.vm_instance_type
-  associate_public_ip_address = true
+
+  # Define custom network interface to control the network settings of the EC2 instance, instead of letting AWS choose defaults (like auto-assigning public IPs)
+  vpc_security_group_ids = [aws_security_group.db_sg.id]
+  associate_public_ip_address = var.just_private_ip
 
   key_name = var.vm_key_name
 
-  user_data = file("${path.module}/user_data.sh")
-
   tags = {
-    Name = "tech515-carla-tf-app-instance"
+    Name = "tech515-carla-tf-db-instance"
   }
 }
 

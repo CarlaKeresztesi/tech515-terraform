@@ -1,17 +1,3 @@
-# Adding HTTP provider, data source and local for AUTOMATED IP
-
-terraform {
-  required_providers{
-    http = {
-      source = "hashicorp/http"
-      version = "~> 3.4"
-    }
-    aws = {
-      source = "hashicorp/aws"
-    }
-  }
-}
-
 # Configure AWS provider
 provider "aws" {
       region = var.default_region
