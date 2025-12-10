@@ -23,7 +23,8 @@ resource "aws_security_group" "db_sg" {
     from_port   = var.db_port
     to_port     = var.db_port
     protocol    = "tcp"
-    cidr_blocks = [var.db_ingress_cidr]
+   # cidr_blocks = [var.db_ingress_cidr]
+    security-groups = [var.app_sg_id]
   }
 
   
@@ -43,8 +44,6 @@ resource "aws_instance" "app_instance" {
   associate_public_ip_address = true
 
   key_name = var.vm_key_name
-
-  vpc_security_group_ids = [aws_security_group.app_sg.id]
 
   user_data = file("${path.module}/user_data.sh")
 
