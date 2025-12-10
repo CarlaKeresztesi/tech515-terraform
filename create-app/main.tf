@@ -24,7 +24,7 @@ data "http" "my_ip" {
 
 # Convert it into a /32 CIDR - for an Automatically updated IP
 locals {
-  my_ip_cidr = "${data.http.my_ip.body}/32"
+  my_ip_cidr = "${data.http.my_ip.response_body}/32"
 }
 
 # Networking Security Group
