@@ -39,7 +39,8 @@ resource "aws_instance" "db_instance" {
   ami                         = var.db_ami_id
   instance_type               = var.vm_instance_type
 
-  # Define custom network interface to control the network settings of the EC2 instance, instead of letting AWS choose defaults (like auto-assigning public IPs)
+  # Define custom network interface to control the network settings of the EC2 instance, 
+  #instead of letting AWS choose defaults (like auto-assigning public IPs)
   vpc_security_group_ids = [aws_security_group.db_sg.id]
   associate_public_ip_address = var.just_private_ip
 

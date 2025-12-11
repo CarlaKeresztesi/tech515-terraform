@@ -62,7 +62,10 @@ resource "aws_instance" "app_instance" {
 
   vpc_security_group_ids = [aws_security_group.app_sg.id]
 
-  user_data = file("${path.module}/user_data.sh")
+  # user_data = file("${path.module}/user_data.sh")
+  user_data = templatefile("${path.moodule}/app-user-data.tpl", {
+    db_private_ip = aws_instance.db_instance.private_ip
+  })
 
   tags = {
     Name = "tech515-carla-tf-app-instance"

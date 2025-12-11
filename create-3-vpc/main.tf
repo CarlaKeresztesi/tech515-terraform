@@ -134,10 +134,10 @@ resource "aws_security_group" "db_sg" {
   vpc_id      = aws_vpc.custom.id
 
   ingress {
-    description = "DB from APP SG only"
-    from_port   = 27017
-    to_port     = 27017
-    protocol    = "tcp"
+    description     = "DB from APP SG only"
+    from_port       = 27017
+    to_port         = 27017
+    protocol        = "tcp"
     security_groups = [aws_security_group.app_sg.id]
   }
 
@@ -158,12 +158,15 @@ resource "aws_security_group" "db_sg" {
 resource "aws_instance" "app_instance" {
   ami                         = var.app_ami_id
   instance_type               = var.vm_instance_type
-  subnet_id = aws_subnet.public.id
+  subnet_id                   = aws_subnet.public.id
   associate_public_ip_address = true
-  vpc_security_group_ids = [aws_security_group.app_sg.id]
-  key_name = var.vm_key_name
+  vpc_security_group_ids      = [aws_security_group.app_sg.id]
+  key_name                    = var.vm_key_name
 
-  user_data = file("${path.module}/user_data_app.sh")
+  # user_data = file("${path.module}/user_data_app.sh")
+  user_data = templatefile("${path.moodule}/app-user-data.tpl", {
+    db_private_ip = aws_instance.db_instance.private_ip
+  })
 
   tags = {
     Name = "tech515-carla-tf-VPC-app-instance"
@@ -174,10 +177,10 @@ resource "aws_instance" "app_instance" {
 resource "aws_instance" "db_instance" {
   ami                         = var.db_ami_id
   instance_type               = var.vm_instance_type
-  subnet_id = aws_subnet.private.id
+  subnet_id                   = aws_subnet.private.id
   associate_public_ip_address = false
-  vpc_security_group_ids = [aws_security_group.db_sg.id]
-  key_name = var.vm_key_name
+  vpc_security_group_ids      = [aws_security_group.db_sg.id]
+  key_name                    = var.vm_key_name
 
   tags = {
     Name = "tech515-carla-tf-VPC-db-instance"
