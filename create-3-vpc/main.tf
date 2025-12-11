@@ -11,6 +11,7 @@ data "http" "my_ip" {
 # Convert it into a /32 CIDR - for an Automatically updated IP
 locals {
   my_ip_cidr = "${data.http.my_ip.response_body}/32"
+  #my_ip_cidr = format("%s/32", data.http.my_ip.response_body)
 }
 
 # Networking - VPC
@@ -164,7 +165,7 @@ resource "aws_instance" "app_instance" {
   key_name                    = var.vm_key_name
 
   # user_data = file("${path.module}/user_data_app.sh")
-  user_data = templatefile("${path.moodule}/app-user-data.tpl", {
+  user_data = templatefile("${path.module}/user_data_app.tpl", {
     db_private_ip = aws_instance.db_instance.private_ip
   })
 
