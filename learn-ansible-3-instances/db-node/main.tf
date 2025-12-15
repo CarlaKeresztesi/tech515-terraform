@@ -32,6 +32,7 @@ resource "aws_security_group" "target_node_db_sg" {
     to_port         = 27017
     protocol        = "tcp"
     security_groups = [data.aws_security_group.target_node_app_sg.id]
+
   }
 
   egress {
@@ -42,7 +43,7 @@ resource "aws_security_group" "target_node_db_sg" {
   }
 
   tags = {
-    Name = "tech515-carla-target-node-db-allow-port-22-27017"
+    Name = "tech515-carla-new-target-node-db-allow-port-22-27017"
   }
 }
 
@@ -69,6 +70,6 @@ resource "aws_instance" "target_node_db" {
   vpc_security_group_ids = [aws_security_group.target_node_db_sg.id]
 
   tags = {
-    Name = "tech515-carla-ubuntu-2204-ansible-target-node-db"
+    Name = "tech515-carla-new-node-db"
   }
 }

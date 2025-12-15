@@ -40,7 +40,7 @@ resource "aws_security_group" "target_node_app_sg" {
   }
 
   tags = {
-    Name = "tech515-carla-target-node-app-allow-port-22-80-3000"
+    Name = "tech515-carla-new-target-node-app-allow-port-22-80-3000"
   }
 }
 
@@ -67,6 +67,6 @@ resource "aws_instance" "target_node_app" {
   vpc_security_group_ids = [aws_security_group.target_node_app_sg.id]
 
   tags = {
-    Name = "tech515-carla-ubuntu-2204-ansible-target-node-app"
+    Name = "tech515-carla-new-node-app"
   }
 }
